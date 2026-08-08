@@ -1,0 +1,10 @@
+priorities:
+  low:
+    max_carbon_intensity: 50 # gCO2eq/kWh
+    description: "Background tasks, data archival, non-urgent model retraining"
+  medium:
+    max_carbon_intensity: 150 # gCO2eq/kWh
+    description: "Daily reporting, batch processing"
+  high:
+    max_carbon_intensity: 250 # gCO2eq/kWh
+    description: "Business-critical pipelines, user-facing async jobs"

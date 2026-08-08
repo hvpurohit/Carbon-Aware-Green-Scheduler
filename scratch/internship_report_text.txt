@@ -1,0 +1,630 @@
+Green-Scheduler : Carbon aware Job Scheduling Pipeline
+Industry Internship report submitted
+For Review in fulfillment of 
+The requirement for the degree of
+Bachelor of Technology 
+Computer Science and Engineering
+By
+Hitanshu Purohit - 22000386
+
+Guided By: 
+Guide: Medhansh Patel, CloudCraft LLP
+Co-Guide: Dr. Avani Vasant
+
+
+Department of Computer Science and Engineering 
+School of Engineering and Technology 
+Navrachana University, Vadodara 
+May 2026
+CERTIFICATE
+
+This is to certify that the project report entitled “Green-Scheduler : Carbon aware Job Scheduling Pipeline” submitted by “Hitanshu Purohit” to School of Engineering and Technology (SET) of Navrachana University, Vadodara, in partial fulfillment for the award of the degree of B. Tech in Computer Science and Engineering (CSE) department. This report is a bona fide record work that has been carried out under our supervision during the academic year 2025-26. The contents of this report, in full or in parts, have not been submitted to any other Institution or University for the award of any degree or diploma.
+
+
+
+Medhansh Patel
+Director,
+CloudCraft LLP
+Vadodara
+
+Prof. Ninad Bhavsar
+Program Chair and Assistant Professor
+Computer Science and Engineering
+School of Engineering and Technology
+Navrachana University, Vadodara
+
+Dr. Avani Vasant
+Professor for
+CSE, BCA and BSc DS
+School of Engineering and Technology
+Navrachana University, Vadodara
+
+*insert certificate*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Declaration
+
+I declare that this written submission represents my ideas in my own words and where others' ideas or words have been included, I have adequately cited and referenced the original sources. I also declare that I have adhered to all principles of academic honesty and integrity and have not misrepresented or fabricated or falsified any idea/data/fact/source in my submission. I understand that any violation of the above will be cause for disciplinary action by the Institute and can also evoke penal action from the sources which have thus not been properly cited or from whom proper permission has not been taken when needed.
+Name of the student
+Student ID
+Signature
+Hitanshu Purohit
+22000386
+
+
+
+
+Date: 16-05-2026
+
+
+
+
+
+
+
+
+
+
+Acknowledgment
+Every project, big or small, is successful largely due to the effort of a number of wonderful people who have always given their valuable advice or lent a helping hand. I sincerely appreciate the inspiration, support, and guidance of all those people who have been instrumental in making this project a success. I am extremely grateful to Medhansh Patel CloudCraft LLP for entrusting me with the project “Green-Scheduler” and giving me the opportunity to undertake such a challenging and innovative work. I feel deeply honored in expressing my sincere thanks to my Internal Guide Dr. Avani Vasant for providing valuable insights leading to the successful completion of the project.
+I would also like to thank all the team members at CloudCraft LLP and the faculty members of CSE for their critical advice and guidance, without which this project would not have been possible.
+Last but not the least, I place a deep sense of gratitude to colleagues and friends who have been a constant source of inspiration during the preparation of this project work.
+
+
+
+Hitanshu Purohit – 22000386
+
+
+
+
+
+
+ABSTRACT
+Green-Scheduler is a carbon-aware job scheduling pipeline designed to transform GreenOps principles into an automated infrastructure policy. The project implements a Gatekeeper Pattern that evaluates whether a flexible workload should execute immediately or be delayed until the electricity grid becomes cleaner. This practice, known as temporal shifting, is intended to reduce the carbon footprint of compute-intensive workloads such as machine learning training, batch processing, and CI/CD tasks.
+The system is built using a React-based dashboard for workload submission and monitoring, a FastAPI backend for orchestration, SQLite for persistence, and the ElectricityMaps API for real-time carbon-intensity information. A policy-driven decision engine compares current grid carbon intensity against configurable sustainability thresholds defined for low-, medium-, and high-priority jobs. If the grid is sufficiently clean, the workload is executed; otherwise, it is delayed until sustainability conditions are satisfied. In addition to carbon reduction, the project demonstrates alignment with FinOps goals because low-carbon time windows may also correlate with lower spot-instance pricing and better resource efficiency. The system concludes by generating a PDF sustainability certificate containing execution details, grid parameters, and audit evidence. This report presents the design, implementation, workflow, and expected impact of the Green-Scheduler system.
+Keywords: GreenOps, FinOps, Carbon-Aware Scheduling, Temporal Shifting, FastAPI, React, Sustainability, CI/CD.
+
+
+TABLE OF CONTENTS
+SR NO.
+TITLE
+PG NO.
+
+ABSTRACT
+vi
+
+LIST OF TABLES
+viii
+
+LIST OF FIGURES
+viii
+
+LIST OF ABBREVIATIONS
+ix
+
+Company Profile
+x
+1
+Introduction
+1
+2
+Motivation
+2
+3
+Literature Review
+3
+4
+System Requirements for Development and Production Environment
+6
+5
+Stakeholders
+7
+6
+Approach / Methodology Used
+7
+7
+Data / Corpus / Data Dictionary
+8
+8
+Data Flow Diagram
+11
+9
+Use case diagram
+16
+10
+Sequence diagram
+17
+11
+Activity diagram
+18
+12
+Architecture Diagram
+20
+13
+Fully Developed Implementation’s Screenshot and Live Implementation
+23
+14
+Results
+27
+15
+Gantt Chart / Timeline
+30
+16
+Proposed Enhancement / Future Work
+31
+17
+Conclusion
+31
+18
+References
+32
+
+
+
+
+LIST OF TABLES
+SR NO.
+TITLE
+PG NO.
+Table 4.1
+Software Requirements
+6
+Table 5.1
+Stakeholder Mapping
+7
+Table 6.1
+Five Step Workflow Summary
+8
+Table 7.1
+Data Dictionary
+9
+Table 7.2
+Sustainability Policy Thresholds
+10
+Table 14.1
+Results/Expected outcomes
+27
+LIST OF FIGURES
+SR NO.
+TITLE
+PG NO.
+Figure 7.1
+Entity Relationship Diagram
+10
+Figure 8.1
+Level 0
+11
+Figure 8.2
+Level 1
+13
+Figure 8.3
+Level 2
+15
+Figure 9.1
+Use Case Diagram
+16
+Figure 10.1
+Sequence Diagram
+17
+Figure 11.1
+Activity Diagram
+19
+Figure 12.1
+Architecture Diagram
+21
+Figure 12.2
+Module Interaction Diagram
+22
+Figure 13.1
+Dashboard Screenshot
+24
+Figure 13.2
+uploading different intensity python files
+25
+Figure 13.3
+Priority-wise job marking
+25
+Figure 13.4
+Generation of pdf when the job gets executed
+26
+Figure 15.1
+Gantt Chart
+30
+
+
+LIST OF ABBREVIATIONS
+API – Application Programming Interface
+CI/CD – Continuous Integration / Continuous Deployment
+CO2eq – Carbon Dioxide Equivalent
+FinOps – Financial Operations
+gCO2eq/kWh – Grams of Carbon Dioxide Equivalent per Kilowatt-hour
+ML – Machine Learning
+PDF – Portable Document Format
+UI – User Interface
+UML – Unified Modeling Language
+
+
+
+
+
+
+
+
+
+
+
+
+Company Profile
+CloudCraft LLP is a technology-driven organization based in Vadodara, Gujarat, that delivers modern digital solutions across web development, cloud services, AI integration, UI/UX design, and digital marketing. The company positions itself as a provider of scalable and practical technology services aimed at helping businesses strengthen their digital presence and improve operational efficiency through modern engineering practices.
+The service portfolio of CloudCraft LLP spans multiple domains of digital transformation. Its offerings include modern web application development, cloud-based solutions, artificial intelligence integration, interface and user-experience design, and digital marketing support. This multidisciplinary approach enables the company to support clients not only in software development but also in deployment readiness, usability improvement, and broader digital growth initiatives.
+CloudCraft LLP appears to operate with a strong focus on building scalable digital products and technology-enabled business solutions. External business-profile data describes the company as a next-generation technology firm that specializes in web development, cloud and DevOps integration, AI-powered applications, and UI/UX design, while also extending its services into brand building and educational initiatives. This positioning aligns well with the type of practical, implementation-oriented work expected in modern software internships and applied academic projects.
+From an industry perspective, CloudCraft LLP is relevant to emerging areas such as cloud computing, DevOps, AI-enabled systems, and user-centered application design. These domains are closely connected to current software engineering trends, where organizations increasingly require solutions that are efficient, scalable, and adaptable to changing business needs. As a result, the company provides an appropriate professional environment for exposure to real-world software development practices and modern cloud-oriented workflows.
+In the context of this project, CloudCraft LLP can be described as an organization whose expertise in cloud technologies, application development, and digital innovation supports technically relevant and industry-aligned project work. Its emphasis on cloud services, AI integration, and scalable web systems makes it particularly suitable for projects such as Green-Scheduler, which combine software engineering, automation, and modern infrastructure concept
+Introduction
+Green-Scheduler is a carbon-aware scheduling system designed to operationalize sustainability in software infrastructure. The project focuses on flexible compute workloads such as machine learning jobs, batch processing, and CI/CD tasks, and determines whether they should execute immediately or wait until the power grid has lower carbon intensity.
+The central goal of the system is to convert GreenOps from a conceptual recommendation into an automated policy mechanism. Instead of asking users or administrators to manually choose a greener execution time, the platform makes this decision using live carbon-intensity data and a configurable rule engine.
+This approach is important because digital workloads increasingly contribute to indirect carbon emissions through electricity usage. By introducing carbon awareness into job scheduling, the project demonstrates how environmental responsibility can be integrated into software architecture and platform operations.
+1.1 Project title, scope, and definition
+The project title is Green-Scheduler: Carbon-Aware Job Scheduling Pipeline. The scope of the project includes design and implementation of a full-stack platform that accepts Python-based workloads, classifies their execution priority, checks live grid carbon intensity, applies sustainability rules, and either executes or delays the job based on policy.
+The system also includes logging, auditability, and automatic generation of a sustainability certificate after execution. The project is limited to flexible workloads and does not attempt to schedule hard real-time or mission-critical tasks that must run immediately.
+1.2 Problem statement
+Many computing workloads are executed immediately without considering whether the electricity grid is currently being powered by cleaner or dirtier energy sources. This leads to avoidable carbon emissions, especially for workloads that could be delayed with little or no operational impact.
+The problem addressed by this project is the lack of an automated mechanism that incorporates environmental conditions into infrastructure-level execution decisions. Green-Scheduler addresses this by introducing carbon-aware gating before job execution.
+1.3 Objectives
+The major objectives of the project are listed below:
+To build a system that accepts and manages flexible compute workloads.
+To classify workloads according to execution priority.
+To fetch real-time carbon-intensity information from an external API.
+To enforce sustainability policies through an automated decision engine.
+To execute approved jobs and log their output.
+To generate an auditable sustainability certificate.
+To demonstrate the relevance of GreenOps and FinOps in practical software engineering.
+Motivation
+Modern organizations optimize infrastructure primarily for performance, availability, and cost, but environmental impact is now becoming equally significant. A large number of workloads do not require immediate execution and can therefore be shifted in time without affecting critical business functions.
+This project is motivated by the idea that flexible compute jobs can be scheduled during lower-carbon electricity windows. Such temporal shifting allows organizations to reduce emissions without changing application logic or relocating infrastructure.
+An additional motivation is the economic benefit of better workload timing. Since low-carbon periods may also align with favorable resource pricing or better compute availability, the project creates a bridge between sustainability goals and FinOps optimization.
+Literature Review
+Green-Scheduler is based on the concept that software systems can reduce environmental impact by making runtime decisions according to grid conditions. This work is closely related to emerging themes in sustainable computing, cloud optimization, ML-Ops, and carbon-aware infrastructure.
+The project implements the Gatekeeper Pattern, where each workload must pass through a decision checkpoint before execution. In this model, the scheduler acts as a policy-enforcement layer rather than a passive monitoring tool.
+Temporal shifting is the primary conceptual foundation of the system. Instead of moving workloads geographically, the project shifts them in time so that energy-intensive processing can occur during cleaner electricity windows.
+Carbon-aware computing has emerged as an important research direction because conventional workload scheduling often optimizes only for performance, latency, or cost, while ignoring the carbon intensity of electricity at the time of execution. Recent research on carbon-aware scheduling shows that greenhouse-gas reductions can be achieved by making scheduling decisions based on time-varying grid emissions, and some studies report reductions of up to 47.6% with only limited impact on makespan. This line of work is especially relevant to flexible workloads, where execution can be delayed without violating strict business constraints.
+A central concept in this field is temporal shifting, which means moving workloads from one time window to another so that they run when the electricity supply is cleaner. Instead of relocating workloads geographically, temporal shifting uses the variation in renewable-energy availability and carbon intensity throughout the day to reduce emissions. This approach is practical because many tasks in cloud and platform environments, such as batch jobs, analytics pipelines, model training, and CI/CD jobs, are delay-tolerant and therefore suitable for environmentally informed scheduling.
+GreenOps has developed as an operational discipline that formalizes this sustainability perspective in cloud infrastructure. Forrester defines GreenOps as the practice of minimizing a cloud environment’s carbon footprint through efficient use of cloud resources, while also recognizing that emissions depend on broader factors such as electricity source, data movement, infrastructure footprint, and cooling efficiency. This is important because cloud sustainability is not achieved only through efficient servers; it also depends on how and when workloads are run, what regions are used, and how much waste exists in the overall system.
+The relationship between GreenOps and FinOps is particularly important in the literature because both disciplines aim to improve resource efficiency. Forrester notes that the same activities used in FinOps, such as right-sizing, deleting idle resources, and scheduling compute off-time, can also reduce carbon emissions, and describes cost as a close proxy for sustainability in many operational contexts. Similarly, research on FinOps for sustainable cloud engineering argues that cloud monitoring, cost allocation, budgeting, and forecasting can be integrated into a unified optimization strategy that improves both economic and operational efficiency. This overlap supports the idea that carbon-aware scheduling is not only an environmental initiative but also a cost-management opportunity.
+Another recurring theme in the literature is the need for real-time or near-real-time carbon signals. Carbon-aware scheduling depends on visibility into grid intensity, which can change significantly based on renewable generation mix, demand, and regional power characteristics. This has led to increased interest in platforms and APIs that expose carbon-intensity metrics to infrastructure systems so that scheduling decisions can be made automatically rather than manually. In practical terms, this means that a scheduler can use live environmental data the same way traditional systems use CPU, memory, or queue length metrics.
+Research also shows that carbon-aware scheduling is not limited to centralized cloud data centers. Work on edge-fog and distributed systems proposes carbon-aware task allocation algorithms that adjust execution based on renewable availability and real-time carbon intensity while maintaining acceptable task completion times. These studies are significant because they demonstrate that sustainability-aware scheduling can be generalized across different computing environments, from cloud orchestration to IoT-driven edge infrastructures. Although Green-Scheduler is focused on a software-platform use case, the same conceptual model applies across these broader distributed systems.
+In workflow systems, scheduling complexity increases because tasks may have dependencies, precedence constraints, or fixed resource mappings. Recent work on carbon-aware workflow scheduling highlights that emission reduction is more effective when schedulers account not only for carbon intensity over time but also for workflow structure and execution dependencies. This finding is relevant because it suggests that future versions of systems like Green-Scheduler could move beyond single-job approval and support multi-stage workflows with dependency-aware optimization.
+The literature also emphasizes that carbon optimization should not be treated as an isolated metric. Sustainable scheduling introduces trade-offs among emissions, execution time, reliability, cost, and service guarantees. In many real-world settings, not every task can be delayed, so researchers often propose priority-sensitive or policy-based systems that distinguish urgent workloads from flexible ones. This directly supports the design of Green-Scheduler, where job priority influences the maximum acceptable carbon threshold and therefore determines whether a task is delayed or executed immediately.
+A further contribution of recent GreenOps discourse is its emphasis on observability and accountability. Sustainability claims are increasingly expected to be backed by measurable evidence, especially under emerging regulatory pressure and ESG-related reporting requirements. Forrester notes that regulatory and stakeholder expectations are pushing organizations to monitor emissions more closely and to use tools that make carbon impact visible at the infrastructure level. This supports the inclusion of audit logs, grid parameters, and report-generation features in systems like Green-Scheduler, where the sustainability certificate acts as an evidence artifact rather than a purely decorative output.
+From an implementation perspective, much of the literature points toward automation as the missing link between sustainability theory and actual infrastructure behavior. Many organizations understand the value of reducing carbon impact, but without policy engines, monitoring integrations, and scheduler-level controls, sustainability remains advisory rather than enforceable. Green-Scheduler addresses precisely this gap by embedding environmental checks into the job-execution path, turning sustainability into an operational decision rather than a post-hoc analysis.
+Overall, the literature supports the core premise of Green-Scheduler: delay-tolerant workloads can be scheduled more intelligently by combining live carbon-intensity information, workload classification, and policy-based execution controls. Research on carbon-aware scheduling demonstrates meaningful emission reductions, GreenOps explains the operational framework for sustainable cloud behavior, and FinOps literature shows that efficiency-driven controls can simultaneously support economic and environmental outcomes. Together, these strands establish a strong academic foundation for a carbon-aware job scheduling pipeline that is both technically feasible and practically relevant.
+System Requirements for Development and Production Environment
+The Green-Scheduler system is developed as a full-stack web platform using frontend, backend, database, and reporting components.
+4.1 Software requirements
+
+Table 4.1: Technology Stack Overview
+Description
+Frontend
+Next js
+Backend
+FastAPI with uvicorn
+Database
+SQLite
+API Integration
+ElectricityMaps API
+Execution Layer
+Python subprocess
+Reporting
+fpdf
+Configuration
+YAML
+
+Table 4.1 : Software Requirements
+4.2 Hardware requirements
+These are the minimum hardware specifications required for a developer to run the React frontend, Python backend, and local database simultaneously during the development phase.
+Processor (CPU): Intel Core i5 / AMD Ryzen 5 (or Apple M1/M2 equivalent) or higher. Multi-core processing is recommended for running multiple local servers.
+Memory (RAM): 8 GB Minimum (16 GB Recommended to smoothly run Docker containers or local Kubernetes clusters if testing execution).
+Storage: Minimum 20 GB of free SSD space (Solid State Drive is preferred for faster read/write speeds during npm and pip dependency installations).
+Network: Active, stable broadband internet connection (Crucial for querying the external Carbon Intensity APIs in real-time).
+4.3 Production environment
+The production environment for Green-Scheduler includes a backend service capable of receiving job requests, making external API calls, storing metadata in a relational database, and executing workloads securely. The frontend dashboard communicates with the backend through HTTP APIs and provides real-time job visibility.
+Stakeholders
+The project serves multiple technical and organizational stakeholders because it combines sustainability, software engineering, and operations.
+Table 5.1: Stakeholder Mapping
+Role in the system
+Student / Researcher
+Submits flexible compute jobs
+DevOps Engineer
+Uses scheduling for pipelines and batch tasks
+FinOps Team
+Evaluates cost optimization opportunities
+Sustainability Team
+Monitors carbon-aware execution decisions
+Faculty / Reviewer
+Evaluates academic relevance and implementation
+
+Table 5.1 : Stakeholder Mapping
+The system is especially useful where workloads can tolerate delays without affecting critical service-level expectations.
+Approach / Methodology Used
+The Green-Scheduler pipeline follows a structured five-step operational methodology.
+Table 6.1 Five-Step Workflow Summary
+Description
+Step 1
+Workload Submission
+Step 2
+Job Classification
+Step 3
+Green Check
+Step 4
+Decision Engine
+Step 5
+Execution and Audit
+
+Table 6.1 : Five Step Workflow Summary
+6.1 Workload submission
+A user submits Python code through the React-based dashboard. The request is transmitted to the FastAPI backend and stored for further evaluation.
+6.2 Job classification
+The backend scans the submitted code to infer priority. If the code contains libraries such as fastapi or flask, the job is treated as high priority. If it contains pandas, numpy, or tensorflow, it is treated as medium priority. Otherwise, it defaults to low priority.
+6.3 The green check
+The system fetches current carbon intensity from the ElectricityMaps API for the configured region. This value acts as the environmental input to the scheduling decision.
+6.4 Decision engine
+The intensity value is compared against the thresholds defined in sustainability_policy.yaml. If the current grid condition is cleaner than the threshold permitted for the job’s priority, execution is approved. Otherwise, the workload is delayed.
+6.5 Execution and audit
+Approved workloads are run using Python’s subprocess mechanism. Execution logs, duration, and job status are stored, and a PDF sustainability certificate is generated at the end.
+Data / Corpus / Data Dictionary
+This project does not use a traditional machine-learning training dataset, but it does use structured operational data and policy data as input to the system.
+7.1 Data elements used in the project
+Submitted Python code.
+Inferred priority level.
+Carbon-intensity value.
+Policy threshold.
+Execution status.
+Standard output and error logs.
+Timestamps.
+Certificate path and audit details.
+7.2 Data dictionary
+Table 7.1 Data Dictionary
+Description
+job_id
+Unique identifier for each workload
+code
+Submitted Python code
+priority
+Inferred job priority
+carbon_intensity
+Current grid intensity value
+threshold
+Policy threshold for the priority
+decision
+Approved or delayed
+stdout
+Standard output of execution
+stderr
+Error output of execution
+created_at
+Job creation timestamp
+completed_at
+Job completion timestamp
+certificate_path
+Local path of generated sustainability certificate
+
+Table 7.1 : Data Dictionary
+7.3 Policy file
+The sustainability_policy.yaml file acts as the main configuration source for threshold-based decisions.
+Table 7.2 Sustainability Policy Thresholds
+Example Value
+Low Priority
+50 gCO2eq/kWh
+Medium Priority
+150 gCO2eq/kWh
+High Priority
+250 gCO2eq/kWh
+
+Table 7.2 : Sustainability Policy Thresholds
+7.4 Entity relationship diagram
+The Entity Relationship diagram models the structural relationship between operational job records and captured grid-intensity logs. It shows that the JOB entity stores the main execution metadata such as job identifier, Python code payload, inferred priority, execution status, execution duration, carbon intensity at runtime, applicable threshold, output logs, timestamps, and certificate path. The GRID_LOG entity stores carbon-observation information including zone, intensity value, and timestamp, and the diagram indicates that job evaluation is performed against these grid observations.
+
+Figure 7.1 : Entity Relationship Diagram
+Data Flow Diagram 
+This chapter explains how data and control move through the system from the user interface to execution and audit reporting.
+8.1 Data flow description
+The user submits a workload from the frontend. The backend stores the request, classifies the job, checks grid intensity, applies the policy, and either delays or executes the workload. Once execution is complete, the system writes logs and generates a sustainability certificate.
+8.2 Level 0 : Context Diagram
+The Level 0 DFD represents the Green-Scheduler system at the highest level of abstraction. In this diagram, the complete application is treated as a single process, labeled as 0.0 Green-Scheduler System, and only its interaction with external entities is shown.
+The main external entities interacting with the system are the Developer/User, the External Carbon API (ElectricityMaps), and the Execution Cluster (Kubernetes). The Developer or User provides job parameters and sustainability policy input to the system, while the system returns the final PDF sustainability report after the execution and audit process is completed. The External Carbon API provides real-time carbon intensity data for the selected region in response to the system’s API request. Similarly, the Execution Cluster receives the dispatched workload and returns execution completion details and energy metrics back to the system.
+
+
+Figure 8.1 : Level 0
+
+
+
+8.2 Level 1 : System Overview
+The Level 1 DFD expands the single process shown in Level 0 into the major internal processes of the Green-Scheduler application. It provides a system-wide view of how a workload flows through submission, evaluation, execution, and reporting stages.
+The process begins with 1.0 Manage Job Submissions, where the Developer or User submits the job details and applicable policy. This information is stored in D1: Job Database as job details and status records. The next major process is 2.0 Evaluate Carbon Intensity, which retrieves pending jobs and their thresholds from the database and sends an API request to the external carbon service. The system then receives real-time carbon intensity data, which is used to determine whether the job should be executed or delayed.
+If the carbon intensity is within the acceptable threshold, the process triggers 3.0 Execute Workload, which dispatches the workload to the execution cluster. The execution cluster processes the job and sends back completion information and energy metrics. These outputs are then forwarded to 4.0 Generate Audit Report, which prepares the final sustainability report in PDF format. The formatted audit record is stored in D2: Audit and Logs Database, and the generated PDF sustainability report is made available to the user.
+
+Figure 8.2 : Level 1
+
+
+8.2 Level 2 : Deep Dive into Process 2.0
+The Level 2 DFD provides a more detailed decomposition of Process 2.0: Evaluate Carbon Intensity, which is the most critical decision-making component in the Green-Scheduler system. This level demonstrates the internal micro-steps involved in determining whether a workload should be executed immediately or deferred until cleaner grid conditions are available.
+The process starts with 2.1 Retrieve Pending Jobs, where the system reads pending job details from the job database. Along with these jobs, the system also considers the corresponding thresholds, limits, and target execution regions associated with each workload. The next step is 2.2 Fetch Region Carbon Data, in which the system sends an API request to the external carbon service and retrieves real-time carbon intensity values in grams of carbon dioxide equivalent per kilowatt-hour (gCO2eq/kWh).
+After fetching the current grid data, the system performs 2.3 Evaluate Policy vs. Intensity. In this step, the live carbon intensity is compared with the threshold defined for the job’s assigned priority level. The evaluation result is then categorized as either pass or fail depending on whether the measured carbon intensity satisfies the sustainability policy.
+Finally, the system enters 2.4 Update Schedule State, where the scheduling decision is applied. If the evaluation result indicates that the grid conditions are clean enough, the system generates an execution trigger and forwards the workload to 3.0 Execute Workload. If the result indicates that the carbon intensity is too high, the job status is updated to delayed in the job database, and the workload remains pending until the next evaluation cycle.
+
+Figure 8.3 : Level 2
+Use case diagram
+The Use Case Diagram captures the external functional interactions supported by the Green-Scheduler pipeline. The primary actor is the user or developer, who can submit jobs, define or work with sustainability policy, and view or download audit certificates. A secondary external role is represented by the carbon-intensity API, which supplies live environmental data required for scheduling decisions, while the execution cluster appears as the destination for approved workloads.
+Within the system boundary, the diagram highlights the internal use cases that collectively support green scheduling. These include triggering job evaluation, querying real-time carbon intensity, evaluating policy thresholds, executing the remote workload when the grid is sufficiently clean, and generating the sustainability audit report. The include and extend relationships indicate that carbon checking and policy evaluation are necessary parts of the workflow, while execution occurs only when the sustainability condition is met.
+
+Figure 9.1 : Use Case Diagram
+
+
+Sequence diagram
+The Sequence Diagram explains the chronological interaction among the React user interface, FastAPI backend, ElectricityMaps API, SQLite database, subprocess execution engine, and PDF generator. First, the user submits Python code through the /api/jobs endpoint, after which the backend analyzes the imports, infers priority, and inserts a pending job record into the database. The backend then repeatedly checks pending jobs, queries the carbon-intensity API, and compares the returned value with the configured policy threshold.
+If the intensity is less than or equal to the threshold, the backend updates the job as approved, executes the sandboxed script through the subprocess engine, receives standard output, standard error, and duration, and then triggers certificate generation. If the intensity exceeds the threshold, the backend updates the job status as deferred and waits for the next evaluation cycle. Finally, the user can request the job list and receive the current status along with the PDF download link for completed jobs.
+
+Figure 10.1 : Sequence Diagram
+Activity diagram
+The Activity Diagram describes the decision-oriented control flow of the Green-Scheduler system. The process starts when a job is submitted to the backend and undergoes static analysis for priority classification. Based on the classification, the system selects the applicable sustainability threshold, fetches real-time grid intensity from the ElectricityMaps API, and compares the current value against the threshold.
+If the grid intensity is higher than the permissible level, the job is marked as deferred and the system waits for the next polling interval before re-evaluation. If the grid intensity is within the acceptable threshold, the job is approved and executed through the subprocess engine. After execution, the system captures standard output and standard error, generates the sustainability certificate, and marks the job as completed. This diagram clearly represents the conditional branching that makes the scheduler carbon-aware.
+
+Figure 11.1 : Activity Diagram
+
+
+Architecture Diagram
+The architecture of Green-Scheduler consists of a React frontend, a FastAPI backend, a SQLite database, an external carbon-intensity API, an execution engine, and a certificate-generation module.
+12.1 Architecture explanation
+The frontend allows users to submit jobs and monitor status. The backend acts as the core orchestrator that receives requests, fetches grid data, evaluates policy, and coordinates execution. The database preserves job state, while the execution engine runs approved workloads and the reporting module generates the final PDF certificate.
+12.2 Overall system architecture diagram
+The Overall System Architecture Diagram illustrates the major structural components and their communication paths. The user interacts with the Next js based frontend dashboard, which submits jobs and checks status through backend API services. The backend communicates with the decision engine, requests real-time carbon data from the external carbon API, dispatches approved workloads to the execution engine, and stores persistent state in the database.
+The execution engine sends execution metrics to the audit and reporting component, which generates the sustainability report and writes report-related information back to the database. This architecture shows a clean separation of concerns between interface, orchestration, environmental data retrieval, execution, persistence, and audit generation, making the system modular and maintainable.
+
+Figure 12.1 : Architecture Diagram
+12.3 Module interaction diagram
+The Module Interaction Diagram gives a more implementation-focused view of how the core modules cooperate during runtime. The user or developer submits a Python workload or checks live grid and job status through the React dashboard. The FastAPI backend receives API calls, saves job state in SQLite, obtains live carbon data from the ElectricityMaps API, passes job and grid data to the decision engine, and coordinates certificate creation.
+The decision engine either defers the job by updating the database when the threshold is exceeded or approves execution when the grid is sufficiently clean. Approved workloads are sent to the subprocess-based execution engine, which runs the sandboxed script and returns execution logs and duration. In parallel, the PDF generator produces the sustainability certificate, after which the backend updates the final status and makes the result visible to the user. This diagram clearly highlights the operational dependencies among user interface, API layer, policy evaluation, execution, persistence, and reporting modules.
+
+Figure 12.2 : Module Interaction Diagram
+Fully Developed Implementation’s Screenshot and Live Implementation
+This chapter captures the implemented interface and output artifacts of the Green-Scheduler system.
+13.1 Implemented modules
+The project includes the following implemented modules:
+React dashboard for workload submission and monitoring.
+Real-time grid intelligence status widget.
+Backend API using FastAPI.
+SQLite persistence layer.
+Priority inference and decision engine.
+Subprocess-based execution engine.
+PDF sustainability certificate generation.
+
+
+
+
+
+
+
+
+
+
+
+13.2 Application Screenshots
+
+Figure 13.1 : Dashboard Screenshot
+
+
+
+Figure 13.2 : uploading different intensity python files
+
+Figure 13.3 : Priority-wise job marking
+
+
+Figure 13.4 : Generation of pdf when the job gets executed
+
+
+
+Results
+The project demonstrates that carbon-aware scheduling can be transformed into an automated operational pipeline. The integration of real-time grid checks, rule-based decision making, and verifiable certificate generation makes the system suitable for demonstrating sustainable infrastructure principles.
+
+Table 14.1 Results / Expected Impact Summary
+Observation
+Carbon-aware execution
+Flexible workloads can be delayed until grid conditions improve
+Operational visibility
+Dashboard shows live job and grid status
+Auditability
+PDF certificate preserves execution evidence
+Cost alignment
+Cleaner windows may also support better FinOps outcomes
+Sustainability value
+Temporal shifting may reduce emissions for suitable jobs
+
+Table 14.1 : Results/Expected outcomes
+ 
+14.1  Scenario A: Execution During High Carbon Intensity (Low Priority)
+To validate the scheduler’s ability to defer non-critical workloads under unfavorable environmental conditions, a background data-cleanup script was submitted to the system as a Low Priority job. According to the configured sustainability policy, low-priority workloads are permitted to execute only when the grid carbon intensity is at or below 50 gCO2eq/kWh. During this test, the external carbon-intensity service returned a real-time grid value of 721 gCO2eq/kWh, which was significantly higher than the allowable threshold.
+Once the job was submitted, the Green-Scheduler pipeline classified the workload, retrieved the applicable policy threshold, and initiated the carbon-check process through the external API. The decision engine then compared the reported intensity against the threshold defined for low-priority jobs and correctly determined that the workload should not be executed at that time. As a result, the system updated the job state in the database to Delayed and withheld dispatch to the execution environment, thereby preventing unnecessary workload execution during a carbon-intensive period.
+This scenario confirms that the proposed system can successfully implement temporal shifting for non-urgent workloads. By deferring execution until cleaner grid conditions are available, the scheduler demonstrates its ability to translate sustainability policy into an enforceable runtime decision rather than leaving it as a manual recommendation. The result also highlights the practical value of the gatekeeper model, in which environmental conditions directly influence infrastructure behavior before resource consumption occurs
+14.2 Scenario B: Execution During Acceptable Grid Conditions (High Priority
+To verify the successful execution path of the scheduling pipeline, a critical machine-learning training workload was submitted as a High Priority job. In the current sustainability policy, high-priority workloads are allowed to execute at a more relaxed threshold of 250 gCO2eq/kWh, reflecting their greater operational importance. Under this scenario, the grid carbon intensity was within the acceptable limit, which allowed the system to approve execution.
+The workflow began with job submission through the interface, followed by workload classification and policy mapping. The backend then invoked the carbon-intensity check and compared the returned value with the threshold for high-priority tasks. Since the environmental condition satisfied the configured policy, the decision engine generated an execution trigger and dispatched the workload to the execution component. The system then completed the workload in 0.08 seconds, captured execution logs, and automatically generated the PDF Sustainability Audit Certificate as proof of compliant execution and audit completion.
+This scenario demonstrates that the Green-Scheduler does not merely delay workloads, but also supports smooth and timely execution when sustainability conditions are met. The result verifies the full positive workflow of the system, including policy evaluation, dispatch, execution, logging, and certificate generation. It also shows that carbon-aware scheduling can be integrated into practical software pipelines without interfering with the successful completion of important workloads.
+14.3 Workflow Explanation Across Scenarios
+The two scenarios collectively explain the functional behavior of the Green-Scheduler pipeline under different environmental conditions. In both cases, the workflow begins with job submission and static analysis of the code to infer the workload’s priority level. Once the priority is determined, the system reads the corresponding policy threshold from the sustainability configuration and sends a request to the ElectricityMaps service for current regional carbon-intensity data.
+After receiving the real-time carbon data, the decision engine compares the measured intensity with the allowable threshold for the submitted workload category. If the value exceeds the threshold, the system records the job as delayed and retains it in the scheduling pipeline for future reevaluation. If the value is within the acceptable limit, the workload is approved, dispatched to the execution environment, and monitored until completion. Once execution ends, the audit module records execution logs, captures environmental context, and generates the sustainability certificate.
+This workflow demonstrates that the system is capable of handling both deferred and approved execution paths using the same policy-driven architecture. As a result, Green-Scheduler supports consistent, traceable, and auditable carbon-aware operations across different workload categories and varying grid conditions.
+14.4 Performance and Latency
+The implementation of the carbon-aware decision engine introduced only minimal additional overhead into the normal job-submission pipeline. Because the main added step is an API-based carbon-intensity lookup followed by a threshold comparison, the architecture remains lightweight and suitable for practical deployment. Electricity Maps describes its platform as a real-time electricity grid API intended for dynamic applications such as monitoring, load shifting, and flexibility-aware decision systems, which supports the use of such integrations in operational scheduling workflows.
+In the current project implementation, API response times were observed to remain within an acceptable range, and the additional latency introduced by the carbon-check stage was small compared to the overall workload lifecycle. The system therefore demonstrates that carbon-aware routing can be incorporated into a FastAPI-based orchestration pipeline without creating a significant performance bottleneck, particularly for delay-tolerant jobs such as batch processing, analytics, and model training.
+From a system-design perspective, this is an important outcome because one of the common concerns in sustainable scheduling is whether environmental intelligence will slow down job processing. The observed behavior indicates that the added sustainability logic remains operationally feasible, especially when paired with asynchronous API handling and lightweight backend orchestration. Hence, the project confirms that carbon-aware decision making can be introduced into modern software systems with limited impact on responsiveness while still delivering measurable sustainability benefits.
+Gantt Chart / Timeline
+This chapter presents the timeline followed during the development of the project.
+
+Figure 15.1 : Gantt Chart
+15.2 Milestone summary
+Total Duration: 66 Days (From January 1st to March 6th)
+Phase 1: Research & Planning (14 days)
+Requirement Analysis & API Research: 7 days
+System Architecture & DFD Design: 7 days
+Phase 2: Backend Core (20 days)
+Database Setup & Job Classification: 10 days
+Carbon Decision Engine Implementation: 10 days
+Phase 3: Frontend & Integration (17 days)
+Next.js Dashboard Development: 10 days
+Backend-Frontend API Integration: 7 days
+Phase 4: Reporting & Testing (15 days)
+PDF Audit Report Generation Pipeline: 5 days
+End-to-End Testing & Debugging: 5 days
+Documentation & Final Report Writing: 5 days
+Proposed Enhancement / Future Work
+The current implementation establishes a solid proof of concept, but several enhancements can extend the project further.
+Integration with Kubernetes, Nomad, or other orchestrators.
+Support for multiple jobs and queue-based scheduling.
+Multi-region decision making for broader carbon optimization.
+Predictive scheduling using historical grid trends.
+Better workload classification using static analysis or machine learning.
+Role-based access control and stronger enterprise audit features.
+Cost analytics and sustainability dashboards for long-term reporting.
+These extensions can make the system more suitable for production deployment and larger organizational use cases.
+Conclusion
+Green-Scheduler demonstrates how GreenOps principles can be translated into a practical and automatable software system. By combining real-time carbon-intensity checks, configurable policy rules, workload prioritization, and PDF-based audit reporting, the project creates a meaningful approach to sustainable job orchestration.
+The project is academically relevant because it connects software architecture, cloud engineering, environmental sustainability, and cost optimization into a single implementation. It is also industrially relevant because it shows that organizations can pursue carbon-aware operations without significantly disrupting existing workload patterns.
+Overall, the project provides a strong foundation for future work in sustainable computing and carbon-aware infrastructure engineering.
+References
+Bhavya N, R. K. Bharathi, “Carbon-Aware Resource Management in Cloud, Edge, and AI Platforms: A Comprehensive Survey,” Journal of Informatics Education and Research, vol. 6, no. 1, 2026.
+Microsoft, “Carbon-aware computing – the white paper,” 2023.
+Matteo Franzil et al., “Carbon-Aware Spatio-Temporal Workload Shifting in Edge–Cloud Environments: A Review and Novel Algorithm,” 2025.
+“Energy-efficient Scheduling Algorithms for Green Cloud Computing,” Journal of Computer Science & Systems Biology, 2024.
+Google Cloud, “Carbon Footprint,” methodology and reporting documentation.
+Cloud Carbon Footprint, “Methodology.”
+“A carbon-aware planning framework for production systems,” 2025.
+“Carbon-Aware Workflow Scheduling with Fixed Mapping,” ACM Digital Library.
+“Carbon- and Precedence-Aware Scheduling for Data ...,” arXiv, 2025.
+“A Study On The Finops Framework For Sustainable Cloud Engineering,” 2023.
+A. A. author(s) unavailable in snippet, “Sustainable Cloud Infrastructure: AI-Driven Carbon-Aware Kubernetes Scheduling,” World Journal of Advanced Research and Reviews, 2025. [Online]. Available: https://wjarr.com/sites/default/files/fulltext_pdf/WJARR-2025-1854.pdf
+Unknown authors, “Adaptive Carbon-Aware Scheduling Policies for HPC Systems,” 2026. [Online]. Available: https://dl.acm.org/doi/10.1007/978-3-032-10507-3_4. 
+Unknown authors, “Green Task: A Carbon-Aware Scheduling Algorithm for Edge-Fog Networks,” 2025. [Online]. Available: https://www.ijsat.org/papers/2025/3/6974.pdf. [Accessed: May 17, 2026].
+J. Yang, Z. Saad, J. Wu, X. Niu, H. Leung, and S. Drew, “A Survey on Task Scheduling in Carbon-Aware Container Orchestration,” arXiv, 2025. [Online]. Available: https://arxiv.org/abs/2508.05949. 
+Unknown authors, “Architecting for sustainability of and in the cloud: A systematic literature review,” 2024. https://research.rug.nl/en/publications/architecting-for-sustainability-of-and-in-the-cloud-a-systematic-. 
+Unknown authors, “Carbon-Aware Workload Management in Data Centers: A Multi-Energy Perspective,” 2025. [Online]. Available: https://dl.acm.org/doi/full/10.1145/3679240.3735104
+Unknown authors, “Energy Efficiency and Carbon-Aware Workload Scheduling in Azure,” 2026. [Online]. Available: https://ijeret.org/index.php/ijeret/article/view/569. 
+Unknown authors, “Cloud Computing in Terms of Sustainable Development,” 2023. [Online]. Available: https://www.sciencedirect.com/science/article/pii/S1877050923011778. 
+Unknown authors, “A Systematic Review of Green-Aware Management Techniques for Sustainable Data Centers,” 2024. [Online]. Available: https://www.sciencedirect.com/science/article/abs/pii/S2210537924000349. 
+Unknown authors, “Carbon-Aware AI Workload Scheduling With Renewable Energy Sources,” 2025. [Online]. Available: https://www.scribd.com/document/1007342445/Carbon-Aware-AI-Workload-Scheduling-With-Renewable-Energy-Sources. 
+
+
+
